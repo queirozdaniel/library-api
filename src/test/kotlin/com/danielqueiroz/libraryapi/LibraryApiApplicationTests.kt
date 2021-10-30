@@ -1,5 +1,6 @@
 package com.danielqueiroz.libraryapi
 
+import com.danielqueiroz.libraryapi.api.dto.view.BookView
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -27,19 +28,20 @@ class LibraryApiApplicationTests {
     @Test
     fun `create a new book`() {
 
-        val json = ObjectMapper().writeValueAsString(null)
+        val dto = BookView(id = 1, title = "Meu livro", author = "Autor", isbn = "121212")
+        val json = ObjectMapper().writeValueAsString(dto)
 
         val request = post(book_api)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                        .content("")
+                        .content(json)
 
         mockMvc.perform(request)
             .andExpect(status().isCreated)
-            .andExpect(jsonPath("id").isEmpty)
-            .andExpect(jsonPath("title").value("Meu livro"))
-            .andExpect(jsonPath("author").value("Autor"))
-            .andExpect(jsonPath("isbn").value("121212"))
+            .andExpect(jsonPath("id").isNotEmpty)
+            .andExpect(jsonPath("title").value(dto.title))
+            .andExpect(jsonPath("author").value(dto.author))
+            .andExpect(jsonPath("isbn").value(dto.isbn))
     }
 
 
