@@ -1,12 +1,17 @@
 package com.danielqueiroz.libraryapi
 
 import com.danielqueiroz.libraryapi.api.dto.view.BookView
+import com.danielqueiroz.libraryapi.domain.model.Book
+import com.danielqueiroz.libraryapi.domain.service.BookService
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.BDDMockito
+import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit.jupiter.SpringExtension
@@ -20,18 +25,24 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 @AutoConfigureMockMvc
 class LibraryApiApplicationTests {
 
+    private final val BOOK_API = "/api/books"
+
     @Autowired
     private lateinit var mockMvc: MockMvc
 
-    private val book_api = "/api/books"
+    @MockBean
+    private lateinit var bookService: BookService
 
     @Test
     fun `create a new book`() {
 
         val dto = BookView(id = 1, title = "Meu livro", author = "Autor", isbn = "121212")
+        val model = Book(id = 1, title = "Meu livro", author = "Autor", isbn = "121212")
+
+        BDDMockito.given(bookService.save(anyObject())).willReturn(model)
         val json = ObjectMapper().writeValueAsString(dto)
 
-        val request = post(book_api)
+        val request = post(BOOK_API)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(json)
@@ -44,5 +55,9 @@ class LibraryApiApplicationTests {
             .andExpect(jsonPath("isbn").value(dto.isbn))
     }
 
+
+    private fun <T> anyObject(): T {
+        return Mockito.anyObject<T>()
+    }
 
 }
