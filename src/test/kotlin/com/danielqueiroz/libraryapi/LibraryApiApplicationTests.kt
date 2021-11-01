@@ -1,6 +1,9 @@
 package com.danielqueiroz.libraryapi
 
+import com.danielqueiroz.libraryapi.api.dto.form.NewBookForm
 import com.danielqueiroz.libraryapi.api.dto.view.BookView
+import com.danielqueiroz.libraryapi.api.mapper.BookViewMapper
+import com.danielqueiroz.libraryapi.api.mapper.NewBookFormMapper
 import com.danielqueiroz.libraryapi.domain.model.Book
 import com.danielqueiroz.libraryapi.domain.service.BookService
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -27,6 +30,12 @@ class LibraryApiApplicationTests {
 
     private final val BOOK_API = "/api/books"
 
+    @MockBean
+    private lateinit var newBookFormMapper: NewBookFormMapper
+
+    @MockBean
+    private lateinit var bookViewMapper: BookViewMapper
+
     @Autowired
     private lateinit var mockMvc: MockMvc
 
@@ -36,10 +45,14 @@ class LibraryApiApplicationTests {
     @Test
     fun `create a new book`() {
 
-        val dto = BookView(id = 1, title = "Meu livro", author = "Autor", isbn = "121212")
+        val form = NewBookForm(title = "Meu livro", author = "Autor", isbn = "121212")
         val model = Book(id = 1, title = "Meu livro", author = "Autor", isbn = "121212")
+        val dto = BookView(id = 1, title = "Meu livro", author = "Autor", isbn = "121212")
 
+        BDDMockito.given(newBookFormMapper.map(form)).willReturn(model)
         BDDMockito.given(bookService.save(anyObject())).willReturn(model)
+        BDDMockito.given(bookViewMapper.map(model)).willReturn(dto)
+
         val json = ObjectMapper().writeValueAsString(dto)
 
         val request = post(BOOK_API)
