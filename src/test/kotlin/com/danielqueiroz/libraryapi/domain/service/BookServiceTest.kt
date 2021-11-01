@@ -5,8 +5,6 @@ import com.danielqueiroz.libraryapi.domain.model.Book
 import com.danielqueiroz.libraryapi.domain.repository.BookRepository
 import com.danielqueiroz.libraryapi.domain.service.impl.BookServiceImpl
 import com.danielqueiroz.libraryapi.helper.createValidBook
-import org.hamcrest.CoreMatchers
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
