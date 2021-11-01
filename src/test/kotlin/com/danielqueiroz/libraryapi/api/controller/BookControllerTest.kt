@@ -7,6 +7,7 @@ import com.danielqueiroz.libraryapi.api.mapper.NewBookFormMapper
 import com.danielqueiroz.libraryapi.domain.model.Book
 import com.danielqueiroz.libraryapi.domain.service.BookService
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.hamcrest.Matchers
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito
@@ -67,6 +68,23 @@ class BookControllerTest {
             .andExpect(MockMvcResultMatchers.jsonPath("author").value(dto.author))
             .andExpect(MockMvcResultMatchers.jsonPath("isbn").value(dto.isbn))
     }
+
+    @Test
+    fun `returns validation error when there are not enough values in book`() {
+
+        val json = ObjectMapper().writeValueAsString(NewBookForm())
+
+        val request = MockMvcRequestBuilders.post(BOOK_API)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(json)
+
+        mockMvc.perform(request)
+            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+            .andExpect(MockMvcResultMatchers.jsonPath("errors", Matchers.hasSize<Int>(3)))
+
+    }
+
 
     /**
      *  Function necessary for use Mockito in Kotlin

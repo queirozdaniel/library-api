@@ -8,6 +8,7 @@ import com.danielqueiroz.libraryapi.domain.service.BookService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("/api/books")
@@ -20,7 +21,7 @@ class BookController(
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun create(@RequestBody form: NewBookForm): BookView {
+    fun create(@RequestBody @Valid form: NewBookForm): BookView {
 
         var entity = newBookFormMapper.map(form)
         entity = bookService.save(entity)
