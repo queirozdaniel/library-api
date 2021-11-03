@@ -1,5 +1,6 @@
 package com.danielqueiroz.libraryapi.domain.repository
 
+import com.danielqueiroz.libraryapi.domain.model.Book
 import com.danielqueiroz.libraryapi.helper.createValidBook
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -51,6 +52,27 @@ class BookRepositoryTest {
         val foundBook = bookRepository.findById(book.id!!)
 
         assertTrue(foundBook.isPresent)
+    }
+
+    @Test
+    fun `save book`() {
+        val book = createValidBook()
+
+        val savedBook = bookRepository.save(book)
+
+        assertNotNull(book.id)
+    }
+
+    @Test
+    fun `delete book by id`() {
+        val book = createValidBook()
+        entityManager.persist(book)
+
+        bookRepository.deleteById(book.id!!)
+
+        val deletedBook = entityManager.find(Book::class.java, book.id)
+
+        assertNull(deletedBook)
     }
 
 }
