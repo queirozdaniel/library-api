@@ -5,6 +5,7 @@ import com.danielqueiroz.libraryapi.domain.model.Book
 import com.danielqueiroz.libraryapi.domain.repository.BookRepository
 import com.danielqueiroz.libraryapi.domain.service.impl.BookServiceImpl
 import com.danielqueiroz.libraryapi.helper.createValidBook
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -89,6 +90,34 @@ class BookServiceTest {
         val book = bookService.getById(id)
 
         assertTrue(book.isEmpty)
+    }
+
+    @Test
+    fun `delete book`() {
+
+        val book = createValidBook(1L)
+
+        assertDoesNotThrow { bookService.deleteById(book.id!!) }
+
+        Mockito.verify(bookRepository, Mockito.times(1)).deleteById(book.id!!)
+
+    }
+
+    @Test
+    fun `update book`() {
+
+        val book = createValidBook(1L)
+        val updatedBook = createValidBook(book.id)
+
+        Mockito.`when`(bookRepository.save(book)).thenReturn(updatedBook)
+
+        val bookReturned = bookService.update(book)
+
+        assertEquals(bookReturned.id, updatedBook.id)
+        assertEquals(bookReturned.author, updatedBook.author)
+        assertEquals(bookReturned.title, updatedBook.title)
+        assertEquals(bookReturned.isbn, updatedBook.isbn)
+        Mockito.verify(bookRepository, Mockito.times(1)).save(updatedBook)
     }
 
 }
