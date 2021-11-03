@@ -4,6 +4,8 @@ import com.danielqueiroz.libraryapi.domain.exception.BusinessException
 import com.danielqueiroz.libraryapi.domain.model.Book
 import com.danielqueiroz.libraryapi.domain.repository.BookRepository
 import com.danielqueiroz.libraryapi.domain.service.BookService
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import java.util.*
 
 class BookServiceImpl(
@@ -27,6 +29,10 @@ class BookServiceImpl(
 
     override fun update(book: Book): Book {
         return bookRepository.save(book)
+    }
+
+    override fun find(filter: Book, pageRequest: Pageable): Page<Book> {
+        TODO("Not yet implemented")
     }
 
 }

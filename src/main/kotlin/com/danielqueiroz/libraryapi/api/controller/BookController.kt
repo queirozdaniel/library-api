@@ -7,6 +7,9 @@ import com.danielqueiroz.libraryapi.api.mapper.NewBookFormMapper
 import com.danielqueiroz.libraryapi.domain.model.Book
 import com.danielqueiroz.libraryapi.domain.service.BookService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
@@ -34,6 +37,16 @@ class BookController(
     fun getById(@PathVariable id: Long) : BookView{
         val model = bookService.getById(id).orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND) }
         return bookViewMapper.map(model)
+    }
+
+    @GetMapping
+    fun findFilteredBooks(query: NewBookForm, pageRequest: Pageable) : Page<BookView> {
+        val model = newBookFormMapper.map(query)
+        val filteredBooks = bookService.find(model, pageRequest)
+
+        val listView = filteredBooks.content.map { item -> bookViewMapper.map(item) }
+
+        return PageImpl(listView, pageRequest, filteredBooks.totalElements )
     }
 
     @DeleteMapping("/{id}")

@@ -1,7 +1,6 @@
 package com.danielqueiroz.libraryapi.api.dto.form
 
 import javax.validation.constraints.NotEmpty
-import javax.validation.constraints.NotNull
 
 data class NewBookForm(
 
