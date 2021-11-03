@@ -13,6 +13,7 @@ import org.mockito.Mockito
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import java.util.*
 
 @ExtendWith(SpringExtension::class)
 @ActiveProfiles("test")
@@ -60,6 +61,34 @@ class BookServiceTest {
 
         Mockito.verify(bookRepository, Mockito.never()).save(book)
 
+    }
+
+    @Test
+    fun `return book by informed id`() {
+        val id = 1L
+        val book = createValidBook(id)
+
+        Mockito.`when`(bookRepository.findById(id)).thenReturn(Optional.of(book))
+
+        val foundBook = bookService.getById(id)
+
+        assertTrue(foundBook.isPresent)
+        assertEquals(foundBook.get().id, id)
+        assertEquals(foundBook.get().author, book.author)
+        assertEquals(foundBook.get().title, book.title)
+        assertEquals(foundBook.get().isbn, book.isbn)
+
+    }
+
+    @Test
+    fun `returns error when no book by entered id is found`() {
+        val id = 1L
+
+        Mockito.`when`(bookRepository.findById(id)).thenReturn(Optional.empty())
+
+        val book = bookService.getById(id)
+
+        assertTrue(book.isEmpty)
     }
 
 }
