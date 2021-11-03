@@ -7,6 +7,7 @@ import com.danielqueiroz.libraryapi.api.mapper.NewBookFormMapper
 import com.danielqueiroz.libraryapi.domain.exception.BusinessException
 import com.danielqueiroz.libraryapi.domain.model.Book
 import com.danielqueiroz.libraryapi.domain.service.BookService
+import com.danielqueiroz.libraryapi.helper.anyObject
 import com.danielqueiroz.libraryapi.helper.createNewBookForm
 import com.danielqueiroz.libraryapi.helper.createValidBook
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -225,11 +226,6 @@ class BookControllerTest {
 
     }
 
-    /**
-     *  Function necessary for use Mockito in Kotlin
-     */
-    private fun <T> anyObject(): T {
-        return Mockito.anyObject<T>()
-    }
+
 
 }

@@ -2,6 +2,14 @@ package com.danielqueiroz.libraryapi.helper
 
 import com.danielqueiroz.libraryapi.api.dto.form.NewBookForm
 import com.danielqueiroz.libraryapi.domain.model.Book
+import org.mockito.Mockito
+
+/**
+ *  Function necessary for use Mockito in Kotlin
+ */
+fun <T> anyObject(): T {
+    return Mockito.anyObject<T>()
+}
 
 fun createNewBookForm() = NewBookForm(title = "Meu livro", author = "Autor", isbn = "121212")
 
