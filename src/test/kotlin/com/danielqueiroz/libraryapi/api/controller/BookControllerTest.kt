@@ -8,6 +8,7 @@ import com.danielqueiroz.libraryapi.domain.exception.BusinessException
 import com.danielqueiroz.libraryapi.domain.model.Book
 import com.danielqueiroz.libraryapi.domain.service.BookService
 import com.danielqueiroz.libraryapi.helper.createNewBookForm
+import com.danielqueiroz.libraryapi.helper.createValidBook
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.Test
@@ -18,6 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit.jupiter.SpringExtension
@@ -196,6 +200,29 @@ class BookControllerTest {
 
         mockMvc.perform(request)
             .andExpect(MockMvcResultMatchers.status().isNotFound)
+    }
+
+    @Test
+    fun `returns filtered books`() {
+
+        val id = 1L
+        val book = createValidBook(id)
+
+        BDDMockito.given(bookService.find(anyObject<Book>(), anyObject<Pageable>()))
+            .willReturn(PageImpl(listOf(book), PageRequest.of(0, 100), 1))
+
+        val queryParam = "?title=${book.title}&author=${book.author}&isbn=${book.isbn}&page=0&size=100"
+
+        val request = MockMvcRequestBuilders.get("$BOOK_API/$queryParam")
+            .accept(MediaType.APPLICATION_JSON)
+
+        mockMvc.perform(request)
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("content", Matchers.hasSize<Int>(1)))
+            .andExpect(MockMvcResultMatchers.jsonPath("totalElements").value(1))
+            .andExpect(MockMvcResultMatchers.jsonPath("pageable.pageSize").value(100))
+            .andExpect(MockMvcResultMatchers.jsonPath("pageable.pageNumber").value(0))
+
     }
 
     /**
