@@ -140,6 +140,19 @@ class BookControllerTest {
             .andExpect(MockMvcResultMatchers.status().isNotFound)
     }
 
+    @Test
+    fun `delete book`() {
+
+        val id = 1L
+
+        val request = MockMvcRequestBuilders.delete("$BOOK_API/$id")
+            .accept(MediaType.APPLICATION_JSON)
+
+        mockMvc.perform(request)
+            .andExpect(MockMvcResultMatchers.status().isNoContent)
+
+    }
+
     /**
      *  Function necessary for use Mockito in Kotlin
      */
