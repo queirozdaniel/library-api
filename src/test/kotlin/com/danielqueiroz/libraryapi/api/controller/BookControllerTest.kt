@@ -153,6 +153,51 @@ class BookControllerTest {
 
     }
 
+    @Test
+    fun `update book`() {
+        val id = 1L
+        val form = createNewBookForm()
+        val model = Book(id = id, title = "Meu livro", author = "Autor", isbn = "121212")
+        val dto = BookView(id = id, title = "Meu livro", author = "Autor", isbn = "121212")
+
+        BDDMockito.given(newBookFormMapper.map(form)).willReturn(model)
+        BDDMockito.given(bookService.getById(id)).willReturn(Optional.of(Book(id = id, title = "Meu livro 2", author = "Autor 2", isbn = "99999")))
+        BDDMockito.given(bookService.update(model)).willReturn(model)
+        BDDMockito.given(bookViewMapper.map(model)).willReturn(dto)
+
+        val json = ObjectMapper().writeValueAsString(form)
+
+        val request = MockMvcRequestBuilders.put("$BOOK_API/1")
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(json)
+
+        mockMvc.perform(request)
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("id").value(id))
+            .andExpect(MockMvcResultMatchers.jsonPath("title").value(dto.title))
+            .andExpect(MockMvcResultMatchers.jsonPath("author").value(dto.author))
+            .andExpect(MockMvcResultMatchers.jsonPath("isbn").value(dto.isbn))
+    }
+
+    @Test
+    fun `returns error when trying to update the nonexistent book`() {
+        val id = 1L
+        val form = createNewBookForm()
+
+        BDDMockito.given(bookService.getById(id)).willReturn(Optional.empty())
+
+        val json = ObjectMapper().writeValueAsString(form)
+
+        val request = MockMvcRequestBuilders.put("$BOOK_API/1")
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(json)
+
+        mockMvc.perform(request)
+            .andExpect(MockMvcResultMatchers.status().isNotFound)
+    }
+
     /**
      *  Function necessary for use Mockito in Kotlin
      */
