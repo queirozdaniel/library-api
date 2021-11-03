@@ -128,6 +128,17 @@ class BookControllerTest {
             .andExpect(MockMvcResultMatchers.jsonPath("isbn").value(book.isbn))
     }
 
+    @Test
+    fun `returns error when no book by entered id is found`(){
+
+        BDDMockito.given(bookService.getById(Mockito.anyLong())).willReturn(Optional.empty())
+
+        val request = MockMvcRequestBuilders.get("$BOOK_API/1")
+            .accept(MediaType.APPLICATION_JSON)
+
+        mockMvc.perform(request)
+            .andExpect(MockMvcResultMatchers.status().isNotFound)
+    }
 
     /**
      *  Function necessary for use Mockito in Kotlin
