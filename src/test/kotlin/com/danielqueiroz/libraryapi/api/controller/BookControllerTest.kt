@@ -24,6 +24,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import java.util.*
 
 @ExtendWith(SpringExtension::class)
 @ActiveProfiles("test")
@@ -105,6 +106,28 @@ class BookControllerTest {
             .andExpect(MockMvcResultMatchers.jsonPath("errors", Matchers.hasSize<Int>(1)))
             .andExpect(MockMvcResultMatchers.jsonPath("errors[0]").value("ISBN já cadastrado"))
     }
+
+    @Test
+    fun `returns informations by book`() {
+
+        val id = 1L
+        val book = Book(id = id, title = "Meu livro", author = "Autor", isbn = "121212")
+        val dto = BookView(id = 1, title = "Meu livro", author = "Autor", isbn = "121212")
+
+        BDDMockito.given(bookService.getById(id)).willReturn(Optional.of(book))
+        BDDMockito.given(bookViewMapper.map(book)).willReturn(dto)
+
+        val request = MockMvcRequestBuilders.get("$BOOK_API/$id")
+            .accept(MediaType.APPLICATION_JSON)
+
+        mockMvc.perform(request)
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("id").value(id))
+            .andExpect(MockMvcResultMatchers.jsonPath("title").value(book.title))
+            .andExpect(MockMvcResultMatchers.jsonPath("author").value(book.author))
+            .andExpect(MockMvcResultMatchers.jsonPath("isbn").value(book.isbn))
+    }
+
 
     /**
      *  Function necessary for use Mockito in Kotlin
