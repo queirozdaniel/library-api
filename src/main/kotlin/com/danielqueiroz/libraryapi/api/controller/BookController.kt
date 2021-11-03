@@ -4,6 +4,7 @@ import com.danielqueiroz.libraryapi.api.dto.form.NewBookForm
 import com.danielqueiroz.libraryapi.api.dto.view.BookView
 import com.danielqueiroz.libraryapi.api.mapper.BookViewMapper
 import com.danielqueiroz.libraryapi.api.mapper.NewBookFormMapper
+import com.danielqueiroz.libraryapi.domain.model.Book
 import com.danielqueiroz.libraryapi.domain.service.BookService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -27,6 +28,12 @@ class BookController(
         entity = bookService.save(entity)
 
         return bookViewMapper.map(entity)
+    }
+
+    @GetMapping("/{id}")
+    fun getById(@PathVariable id: Long) : BookView{
+        val model = bookService.getById(id).get()
+        return bookViewMapper.map(model)
     }
 
 }

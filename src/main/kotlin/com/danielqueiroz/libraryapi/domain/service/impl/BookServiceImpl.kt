@@ -4,6 +4,7 @@ import com.danielqueiroz.libraryapi.domain.exception.BusinessException
 import com.danielqueiroz.libraryapi.domain.model.Book
 import com.danielqueiroz.libraryapi.domain.repository.BookRepository
 import com.danielqueiroz.libraryapi.domain.service.BookService
+import java.util.*
 
 class BookServiceImpl(
     private val bookRepository: BookRepository
@@ -14,6 +15,10 @@ class BookServiceImpl(
         if(bookRepository.existsByIsbn(book.isbn)) throw BusinessException("ISBN já cadastrado")
 
         return bookRepository.save(book)
+    }
+
+    override fun getById(id: Long): Optional<Book> {
+        TODO("Not yet implemented")
     }
 
 }
