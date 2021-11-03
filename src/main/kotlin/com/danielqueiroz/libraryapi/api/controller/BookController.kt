@@ -9,6 +9,7 @@ import com.danielqueiroz.libraryapi.domain.service.BookService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.server.ResponseStatusException
 import javax.validation.Valid
 
 @RestController
@@ -32,7 +33,7 @@ class BookController(
 
     @GetMapping("/{id}")
     fun getById(@PathVariable id: Long) : BookView{
-        val model = bookService.getById(id).get()
+        val model = bookService.getById(id).orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND) }
         return bookViewMapper.map(model)
     }
 
