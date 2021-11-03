@@ -21,4 +21,8 @@ class BookServiceImpl(
         TODO("Not yet implemented")
     }
 
+    override fun deleteById(id: Long) {
+        TODO("Not yet implemented")
+    }
+
 }

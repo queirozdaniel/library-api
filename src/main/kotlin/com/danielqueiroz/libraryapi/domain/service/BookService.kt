@@ -9,5 +9,5 @@ interface BookService {
 
     fun save(book: Book): Book
     fun getById(id: Long): Optional<Book>
-
+    fun deleteById(id: Long)
 }
