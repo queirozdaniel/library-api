@@ -18,7 +18,7 @@ class BookServiceImpl(
     }
 
     override fun getById(id: Long): Optional<Book> {
-        TODO("Not yet implemented")
+        return bookRepository.findById(id)
     }
 
     override fun deleteById(id: Long) {
