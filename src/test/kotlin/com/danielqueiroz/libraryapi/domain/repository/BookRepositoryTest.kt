@@ -42,4 +42,15 @@ class BookRepositoryTest {
         assertFalse(exists)
     }
 
+    @Test
+    fun `returns book by id`() {
+
+        val book = createValidBook()
+        entityManager.persist(book)
+
+        val foundBook = bookRepository.findById(book.id!!)
+
+        assertTrue(foundBook.isPresent)
+    }
+
 }

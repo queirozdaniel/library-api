@@ -22,11 +22,11 @@ class BookServiceImpl(
     }
 
     override fun deleteById(id: Long) {
-        TODO("Not yet implemented")
+        bookRepository.deleteById(id)
     }
 
     override fun update(book: Book): Book {
-        TODO("Not yet implemented")
+        return bookRepository.save(book)
     }
 
 }
