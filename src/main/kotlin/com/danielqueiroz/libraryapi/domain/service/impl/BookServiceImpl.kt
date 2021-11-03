@@ -25,4 +25,8 @@ class BookServiceImpl(
         TODO("Not yet implemented")
     }
 
+    override fun update(book: Book): Book {
+        TODO("Not yet implemented")
+    }
+
 }

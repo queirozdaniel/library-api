@@ -24,7 +24,6 @@ class BookController(
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun create(@RequestBody @Valid form: NewBookForm): BookView {
-
         var entity = newBookFormMapper.map(form)
         entity = bookService.save(entity)
 
@@ -41,6 +40,22 @@ class BookController(
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun delete(@PathVariable id: Long) {
         bookService.deleteById(id)
+    }
+
+    @PutMapping("/{id}")
+    fun update(@PathVariable id: Long, @RequestBody form: NewBookForm ) : BookView {
+        var model = bookService.getById(id).orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND) }
+
+        var entity = newBookFormMapper.map(form)
+
+        model.author = entity.author
+        model.isbn = entity.isbn
+        model.title = entity.title
+
+        model = bookService.update(model)
+
+        return bookViewMapper.map(model)
+
     }
 
 }

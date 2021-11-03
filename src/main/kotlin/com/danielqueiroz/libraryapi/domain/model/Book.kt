@@ -10,7 +10,7 @@ data class Book(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 
-    val title: String,
-    val author: String,
-    val isbn: String
+    var title: String,
+    var author: String,
+    var isbn: String
 )
