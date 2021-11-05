@@ -1,2 +1,7 @@
 logging:
-  level: debug
+  level:
+    org:
+      hibernate: ERROR
+      springframework:
+        web: DEBUG
+    root: WARN
