@@ -7,6 +7,7 @@ import com.danielqueiroz.libraryapi.domain.service.LoanService
 import com.danielqueiroz.libraryapi.helper.anyObject
 import com.danielqueiroz.libraryapi.helper.createNewLoanForm
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.hamcrest.Matchers
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito
@@ -62,6 +63,27 @@ class LoanControllerTest {
         mockMvc.perform(request)
             .andExpect(MockMvcResultMatchers.status().isCreated)
             .andExpect(MockMvcResultMatchers.content().string("1"))
+    }
+
+    @Test
+    fun `returns error when trying to borrow from non-existent book`(){
+
+        val dto = createNewLoanForm()
+
+        BDDMockito.given( bookService.getBookByIsbn(dto.isbn))
+            .willReturn(Optional.empty())
+
+        val json = ObjectMapper().writeValueAsString(dto)
+
+        val request = MockMvcRequestBuilders.post(LOAN_API)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json)
+
+        mockMvc.perform(request)
+            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+            .andExpect(MockMvcResultMatchers.jsonPath("errors", Matchers.hasSize<Int>(1)))
+            .andExpect(MockMvcResultMatchers.jsonPath("errors[0]").value("Book not found for passed isbn"))
     }
 
 }
