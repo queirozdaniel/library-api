@@ -45,7 +45,7 @@ class BookServiceImpl(
     }
 
     override fun getBookByIsbn(isbn: String): Optional<Book> {
-        TODO("Not yet implemented")
+        return bookRepository.findByIsbn(isbn)
     }
 
 }
