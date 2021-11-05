@@ -33,7 +33,7 @@ import java.util.*
 
 @ExtendWith(SpringExtension::class)
 @ActiveProfiles("test")
-@WebMvcTest
+@WebMvcTest(controllers = [BookController::class])
 @AutoConfigureMockMvc
 class BookControllerTest {
 
