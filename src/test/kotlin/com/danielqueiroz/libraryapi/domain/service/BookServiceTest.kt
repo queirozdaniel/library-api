@@ -146,4 +146,21 @@ class BookServiceTest {
 
     }
 
+    @Test
+    fun `find book by isbn`() {
+        val isbn = "123"
+        val book = Book(1, title = "Novo", author = "Ninguem", isbn = isbn)
+
+        Mockito.`when`(bookRepository.findByIsbn(isbn)).thenReturn(Optional.of(book))
+
+        val returnedBook = bookService.getBookByIsbn(isbn)
+
+        assertTrue(returnedBook.isPresent)
+        assertEquals(returnedBook.get().id, book.id)
+        assertEquals(returnedBook.get().isbn, book.isbn)
+
+        Mockito.verify(bookRepository, Mockito.times(1)).findByIsbn(isbn)
+
+    }
+
 }
