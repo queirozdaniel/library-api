@@ -1,5 +1,6 @@
 package com.danielqueiroz.libraryapi.api.controller
 
+import com.danielqueiroz.libraryapi.domain.exception.BusinessException
 import com.danielqueiroz.libraryapi.domain.model.Book
 import com.danielqueiroz.libraryapi.domain.model.Loan
 import com.danielqueiroz.libraryapi.domain.service.BookService
@@ -84,6 +85,30 @@ class LoanControllerTest {
             .andExpect(MockMvcResultMatchers.status().isBadRequest)
             .andExpect(MockMvcResultMatchers.jsonPath("errors", Matchers.hasSize<Int>(1)))
             .andExpect(MockMvcResultMatchers.jsonPath("errors[0]").value("Book not found for passed isbn"))
+    }
+
+    @Test
+    fun `returns an error when trying to borrow a book already borrowed`(){
+
+        val dto = createNewLoanForm()
+        val returnedBook = Book(1L, title = "Novo Mundo", author = "Daniel", isbn = dto.isbn)
+
+        BDDMockito.given( bookService.getBookByIsbn(dto.isbn))
+            .willReturn(Optional.of(returnedBook))
+
+        BDDMockito.given(loanService.save(anyObject())).willThrow(BusinessException("Book already loaned"))
+
+        val json = ObjectMapper().writeValueAsString(dto)
+
+        val request = MockMvcRequestBuilders.post(LOAN_API)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json)
+
+        mockMvc.perform(request)
+            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+            .andExpect(MockMvcResultMatchers.jsonPath("errors", Matchers.hasSize<Int>(1)))
+            .andExpect(MockMvcResultMatchers.jsonPath("errors[0]").value("Book already loaned"))
     }
 
 }
