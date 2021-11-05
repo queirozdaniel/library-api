@@ -44,4 +44,8 @@ class BookServiceImpl(
         return bookRepository.findAll(example, pageRequest)
     }
 
+    override fun getBookByIsbn(isbn: String): Optional<Book> {
+        TODO("Not yet implemented")
+    }
+
 }

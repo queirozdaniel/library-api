@@ -14,4 +14,5 @@ interface BookService {
     fun deleteById(id: Long)
     fun update(book: Book): Book
     fun find(filter: Book, pageRequest: Pageable): Page<Book>
+    fun getBookByIsbn(isbn: String): Optional<Book>
 }
