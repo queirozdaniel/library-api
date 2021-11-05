@@ -61,7 +61,7 @@ class LoanControllerTest {
 
         mockMvc.perform(request)
             .andExpect(MockMvcResultMatchers.status().isCreated)
-            .andExpect(MockMvcResultMatchers.jsonPath("id").isNotEmpty)
+            .andExpect(MockMvcResultMatchers.content().string("1"))
     }
 
 }
